@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace курсовая
@@ -13,8 +9,6 @@ namespace курсовая
     {
         // создаем рабочую область рисунка
         Bitmap b2 = new Bitmap(780, 540);
-
-        List<Point> Points = new List<Point>();
 
         public Form1()
         {
@@ -41,7 +35,6 @@ namespace курсовая
                 }
                 chet2++;
             }
-
             // в цикле с шагом 20 пикелей рисуем прямые
             for (int j = 0; j <= pictureBox1.Height; j += 20)
             {
@@ -67,34 +60,69 @@ namespace курсовая
             pictureBox1.Image = b2;
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        public double F (double x, string equation)
         {
-            double f0 = -0.1666;
-            double x0 = -0.5;
-            double f;
+            string NewEquation = "";
+            foreach (char c in equation)
+            {
+                if (c == 'x')
+                {
+                    NewEquation += x.ToString().Replace(',', '.');
+                }
+                else
+                {
+                    NewEquation += c;
+                }
+            }
+            return Convert.ToDouble(new DataTable().Compute(NewEquation, null));
+        }
+
+        private void BuildButton_Click(object sender, EventArgs e)
+        {
+            string equation = "";
+            if (EquationTextBox.Text != "")
+            {
+                equation = EquationTextBox.Text;
+            }
+            else
+            {
+                MessageBox.Show("You must type an equation!");
+            }
+
+            double x0 = -5;
+            double f0 = F(x0, equation);
+
+            double x = -4.98;
+            double f = F(x, equation);
+
             Pen p = new Pen(Color.Blue, 4);
             Bitmap b1 = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             Graphics g1 = Graphics.FromImage(b2);
-            if (overlay.Checked)    // проверка режима рисования
-            { Sis_coor(); }
+
+            // проверка режима рисования
+            if (OverlayCheckBox.Checked)
+            {
+                Sis_coor();
+            }
             else
             {
                 g1.Clear(Color.White);
                 Sis_coor();
             }
-            double x = -0.48;
-            while (x <= 4)
+            while (x <= 6)
             {
                 if (x != 1)
                 {
-                    f = (x * x * x) / ((x * x) - 1);
+                    f = F(x, equation);
                     g1.DrawLine(p, Convert.ToInt64(x0 * 40 + pictureBox1.Width / 2), Convert.ToInt64(f0 * 40 + pictureBox1.Height - pictureBox1.Height / 2), Convert.ToInt64(x * 40 + pictureBox1.Width / 2), Convert.ToInt64(f * 40 + pictureBox1.Height - pictureBox1.Height / 2));
                     f0 = f;
                     x0 = x;
                 }
                 x += 0.2;
             }
-            pictureBox1.Image = b2;        // изменяем отображаемую картинку
+
+            // изменяем отображаемую картинку
+            pictureBox1.Image = b2;
         }
     }
 }

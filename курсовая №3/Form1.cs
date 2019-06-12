@@ -115,7 +115,7 @@ namespace курсовая
                     g1.Clear(Color.White);
                     Sis_coor();
                 }
-                while (x <= 6)
+                while (x <= 10)
                 {
                     if (x != 1)
                     {

@@ -74,55 +74,62 @@ namespace курсовая
                     NewEquation += c;
                 }
             }
-            return Convert.ToDouble(new DataTable().Compute(NewEquation, null));
+            try
+            {
+                return Convert.ToDouble(new DataTable().Compute(NewEquation, null));
+            }
+            catch (Exception)
+            {
+                return -100;    
+            }
         }
 
         private void BuildButton_Click(object sender, EventArgs e)
         {
             string equation = "";
-            if (EquationTextBox.Text != "")
+            equation = EquationTextBox.Text;
+
+            if (F(0, equation) == -100)
             {
-                equation = EquationTextBox.Text;
+                MessageBox.Show("Unknown equation!");
             }
             else
             {
-                MessageBox.Show("You must type an equation!");
-            }
+                double x0 = -10;
+                double f0 = F(x0, equation);
 
-            double x0 = -5;
-            double f0 = F(x0, equation);
+                double x = -9.98;
+                double f = F(x, equation);
 
-            double x = -4.98;
-            double f = F(x, equation);
+                Pen p = new Pen(Color.Blue, 4);
+                Bitmap b1 = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+                Graphics g1 = Graphics.FromImage(b2);
 
-            Pen p = new Pen(Color.Blue, 4);
-            Bitmap b1 = new Bitmap(pictureBox1.Width, pictureBox1.Height);
-            Graphics g1 = Graphics.FromImage(b2);
-
-            // проверка режима рисования
-            if (OverlayCheckBox.Checked)
-            {
-                Sis_coor();
-            }
-            else
-            {
-                g1.Clear(Color.White);
-                Sis_coor();
-            }
-            while (x <= 6)
-            {
-                if (x != 1)
+                // проверка режима рисования
+                if (OverlayCheckBox.Checked)
                 {
-                    f = F(x, equation);
-                    g1.DrawLine(p, Convert.ToInt64(x0 * 40 + pictureBox1.Width / 2), Convert.ToInt64(f0 * 40 + pictureBox1.Height - pictureBox1.Height / 2), Convert.ToInt64(x * 40 + pictureBox1.Width / 2), Convert.ToInt64(f * 40 + pictureBox1.Height - pictureBox1.Height / 2));
-                    f0 = f;
-                    x0 = x;
+                    Sis_coor();
                 }
-                x += 0.2;
-            }
+                else
+                {
+                    g1.Clear(Color.White);
+                    Sis_coor();
+                }
+                while (x <= 6)
+                {
+                    if (x != 1)
+                    {
+                        f = F(x, equation);
+                        g1.DrawLine(p, Convert.ToInt64(x0 * 40 + pictureBox1.Width / 2), Convert.ToInt64(f0 * 40 + pictureBox1.Height - pictureBox1.Height / 2), Convert.ToInt64(x * 40 + pictureBox1.Width / 2), Convert.ToInt64(f * 40 + pictureBox1.Height - pictureBox1.Height / 2));
+                        f0 = f;
+                        x0 = x;
+                    }
+                    x += 0.2;
+                }
 
-            // изменяем отображаемую картинку
-            pictureBox1.Image = b2;
+                // изменяем отображаемую картинку
+                pictureBox1.Image = b2;
+            }
         }
     }
 }
